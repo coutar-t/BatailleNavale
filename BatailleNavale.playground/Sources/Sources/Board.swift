@@ -74,8 +74,10 @@ class Board {
         self.displayer = displayer
         self.boats = boats
         self.rules = rules
-        initBoard(boardSize: boardSize)
-        placeBoats()
+        if boardSize > 0 {
+            initBoard(boardSize: boardSize)
+            placeBoats()
+        }
     }
     
     func display() {

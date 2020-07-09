@@ -2,6 +2,21 @@ import Foundation
 import XCTest
 
 public class BoardTests: XCTestCase {
+    
+    public func test_givenZeroBoardSize_whenInit_thenNothingHappens() {
+        // Given
+        let displayerMock = DisplayerMock()
+        let rulesMock = RulesMock()
+        rulesMock.canBePlaceInReturnValue = true
+        let board = Board(boats: [], boardSize: 0, displayer: displayerMock, rules: rulesMock)
+        
+        
+        // Then
+        XCTAssertFalse(displayerMock.displayBoardCalled)
+        XCTAssertFalse(displayerMock.displayPlacementErrorCalled)
+        XCTAssertFalse(rulesMock.canBePlaceInCalled)
+    }
+    
     public func test_whenDisplay_thenDisplayerIsCalled() {
         // Given
         let displayerMock = DisplayerMock()
