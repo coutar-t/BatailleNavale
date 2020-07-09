@@ -13,7 +13,15 @@ class TerminalDisplayer: Displayer {
     
     func displayBoard(board: [[Case]]) {
         for x in board {
-            print(x.reduce("", { $0 + $1.print }))
+            print(x.reduce("", { current, boardCase in
+                switch boardCase {
+                    case .croiseur: return current + "c"
+                    case .escorteur: return current + "e"
+                    case .sousmarin: return current + "s"
+                    case .torpilleur: return current + "t"
+                    case .water: return current + "-"
+                }
+            }))
         }
     }
 }

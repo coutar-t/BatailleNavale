@@ -18,3 +18,9 @@
 
 let game = Game(gameSize: 8)
 game.display()
+
+BoatTests.defaultTestSuite.run()
+CaseTests.defaultTestSuite.run()
+OrientationTests.defaultTestSuite.run()
+PlacementErrorTests.defaultTestSuite.run()
+PlacementRulesTests.defaultTestSuite.run()

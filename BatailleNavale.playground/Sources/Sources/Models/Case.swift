@@ -15,14 +15,4 @@ enum Case {
         case .torpilleur: return .torpilleur
         }
     }
-    
-    var print: String {
-        switch self {
-        case .croiseur: return "c"
-        case .escorteur: return "e"
-        case .sousmarin: return "s"
-        case .torpilleur: return "t"
-        case .water: return "-"
-        }
-    }
 }

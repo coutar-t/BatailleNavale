@@ -26,6 +26,18 @@ class Board {
         return (x, y, position)
     }
     
+    private func placeVerticaly(in position: Position, boat: Boat) {
+        for xIterator in position.x..<position.x + boat.size {
+            cases[xIterator][position.y] = Case.fromBoat(boat)
+        }
+    }
+    
+    private func placeHorizontaly(in position: Position, boat: Boat) {
+        for yIterator in position.y..<position.y + boat.size {
+            cases[position.x][yIterator] = Case.fromBoat(boat)
+        }
+    }
+    
     private func place(boat: Boat) throws {
         for _ in 0..<Constants.maxPlacementTry {
             let (x, y, orientation) = generateXYPosition()
@@ -34,13 +46,9 @@ class Board {
                                   orientation: orientation,
                                   in: cases) {
                 if orientation == .vertical {
-                    for xIterator in x..<x + boat.size {
-                        cases[xIterator][y] = Case.fromBoat(boat)
-                    }
+                    placeVerticaly(in: Position(x: x, y: y), boat: boat)
                 } else {
-                    for yIterator in y..<y + boat.size {
-                        cases[x][yIterator] = Case.fromBoat(boat)
-                    }
+                    placeHorizontaly(in: Position(x: x, y: y), boat: boat)
                 }
                 return
             }

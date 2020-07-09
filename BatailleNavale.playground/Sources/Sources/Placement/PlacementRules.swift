@@ -36,7 +36,7 @@ class PlacementRules: Rules {
     func canBePlaceIn(position: Position, size: Int, orientation: Orientation, in board: [[Case]]) -> Bool {
         switch orientation {
         case .horizontal:
-            guard position.y + size < board[position.x].count - 1 else { return false }
+            guard position.y + size <= board[position.x].count else { return false }
             for possibleY in position.y..<position.y + size {
                 if isTopNotAvailable(for: Position(x: position.x, y: possibleY), in: board) ||
                     isbottomNotAvailable(for: Position(x: position.x, y: possibleY), in: board) ||
@@ -50,7 +50,7 @@ class PlacementRules: Rules {
                 return false
             }
         case .vertical:
-            guard position.x + size < board.count - 1 else { return false }
+            guard position.x + size <= board.count else { return false }
             for possibleX in position.x..<position.x + size {
                 if isRightNotAvailable(for: Position(x: possibleX, y: position.y), in: board) ||
                     isLeftNotAvailable(for: Position(x: possibleX, y: position.y), in: board) ||
