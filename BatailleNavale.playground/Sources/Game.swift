@@ -23,7 +23,10 @@ public class Game {
         for _ in 0..<Game.sousmarinNb {
             boats.append(.sousmarin)
         }
-        board = Board(boats: boats, boardSize: gameSize)
+        board = Board(boats: boats,
+                      boardSize: gameSize,
+                      displayer: TerminalDisplayer(),
+                      rules: PlacementRules())
     }
     
     public func display() {

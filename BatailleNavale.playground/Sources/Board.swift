@@ -3,6 +3,8 @@ import Foundation
 class Board {
     var boats: [Boat]
     var cases: [[Case]] = []
+    let displayer: Displayer
+    let rules: Rules
     
     private enum Constants {
         static let maxPlacementTry = 30
@@ -17,55 +19,6 @@ class Board {
         }
     }
     
-    private func isTopNotAvailable(x: Int, possibleY: Int) -> Bool {
-        return x > 0 && cases[x - 1][possibleY] != Case.water
-    }
-    
-    private func isbottomNotAvailable(x: Int, possibleY: Int) -> Bool {
-        return x + 1 < cases.count && cases[x + 1][possibleY] != Case.water
-    }
-    
-    private func isLeftNotAvailable(possibleX: Int, y: Int) -> Bool {
-        return y > 0 && cases[possibleX][y - 1] != Case.water
-    }
-    
-    private func isRightNotAvailable(possibleX: Int, y: Int) -> Bool {
-        return y + 1 < cases[possibleX].count && cases[possibleX][y + 1] != Case.water
-    }
-        
-    private func canBePlaceIn(x: Int, y: Int, size: Int, position: Orientation) -> Bool {
-        switch position {
-        case .horizontal:
-            guard y + size < cases[x].count - 1 else { return false }
-            for possibleY in y..<y + size {
-                if isTopNotAvailable(x: x, possibleY: possibleY) ||
-                    isbottomNotAvailable(x: x, possibleY: possibleY) ||
-                    cases[x][possibleY] != Case.water
-                {
-                    return false
-                }
-            }
-            if isRightNotAvailable(possibleX: x, y: y + size - 1) ||
-                isLeftNotAvailable(possibleX: x, y: y) {
-                return false
-            }
-        case .vertical:
-            guard x + size < cases.count - 1 else { return false }
-            for possibleX in x..<x + size {
-                if isRightNotAvailable(possibleX: possibleX, y: y) ||
-                    isLeftNotAvailable(possibleX: possibleX, y: y) ||
-                                       cases[possibleX][y] != Case.water {
-                    return false
-                }
-            }
-            if isTopNotAvailable(x: x, possibleY: y) ||
-                isbottomNotAvailable(x: x + size - 1, possibleY: y) {
-                return false
-            }
-        }
-        return true
-    }
-    
     private func generateXYPosition() -> (Int, Int, Orientation) {
         let x = Int.random(in: 0..<cases.count)
         let y = Int.random(in: 0..<cases[x].count)
@@ -75,9 +28,12 @@ class Board {
     
     private func place(boat: Boat) throws {
         for _ in 0..<Constants.maxPlacementTry {
-            let (x, y, position) = generateXYPosition()
-            if canBePlaceIn(x: x, y: y, size: boat.size, position: position) {
-                if position == .vertical {
+            let (x, y, orientation) = generateXYPosition()
+            if rules.canBePlaceIn(position: Position(x: x, y: y),
+                                  size: boat.size,
+                                  orientation: orientation,
+                                  in: cases) {
+                if orientation == .vertical {
                     for xIterator in x..<x + boat.size {
                         cases[xIterator][y] = Case.fromBoat(boat)
                     }
@@ -97,22 +53,24 @@ class Board {
             do {
                 try place(boat: boat)
             } catch let error {
-                print("Cannot place \(boat)")
-                print(error.localizedDescription)
+                displayer.displayPlacementError(error: error, for: boat)
                 return
             }
         }
     }
     
-    init(boats: [Boat], boardSize: Int) {
+    init(boats: [Boat],
+         boardSize: Int,
+         displayer: Displayer,
+         rules: Rules) {
+        self.displayer = displayer
         self.boats = boats
+        self.rules = rules
         initBoard(boardSize: boardSize)
         placeBoats()
     }
     
     func display() {
-        for x in cases {
-            print(x.reduce("", { $0 + $1.print }))
-        }
+        displayer.displayBoard(board: cases)
     }
 }

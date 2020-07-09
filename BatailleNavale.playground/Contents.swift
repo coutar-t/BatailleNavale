@@ -16,5 +16,5 @@
  
  */
 
-let game = Game(gameSize: 7)
+let game = Game(gameSize: 8)
 game.display()
