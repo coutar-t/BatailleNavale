@@ -33,6 +33,27 @@ public class BoardTests: XCTestCase {
         XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.board, [[Case.water]])
         XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.size, 1)
     }
+    
+    public func test_givenOneSubmarine_andRulesSaysFalse_whenInit_thenDisplayError() {
+        // Given
+        let displayerMock = DisplayerMock()
+        let rulesMock = RulesMock()
+        rulesMock.canBePlaceInReturnValue = false
+        _ = Board(boats: [.croiseur], boardSize: 1, displayer: displayerMock, rules: rulesMock)
+        
+        
+        // Then
+        XCTAssertEqual(rulesMock.canBePlaceInCallsCount, 30)
+        XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.position.x, 0)
+        XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.position.y, 0)
+        XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.board, [[Case.water]])
+        XCTAssertEqual(rulesMock.canBePlaceInReceivedArguments?.size, 4)
+        
+        XCTAssertEqual(displayerMock.receivedDisplayPlacementErrorArguments?.error as? PlacementError, PlacementError.noMoreSpace)
+        XCTAssertEqual(displayerMock.receivedDisplayPlacementErrorArguments?.boat, Boat.croiseur)
+        XCTAssertTrue(displayerMock.displayPlacementErrorCalledOnly)
+        XCTAssertEqual(displayerMock.displayPlacementErrorCallsCount, 1)
+    }
 }
 
 class DisplayerMock: Displayer {
